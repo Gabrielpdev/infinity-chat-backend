@@ -12,7 +12,7 @@
 
 # testing
 /coverage
-
+/dist
 
 # debug
 npm-debug.log*
