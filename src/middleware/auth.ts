@@ -12,20 +12,20 @@ export const authenticate = async (
   const token = req.header("Authorization")?.replace("Bearer ", "");
 
   if (!token) {
-    return res.status(401).send("Access denied. No token provided.");
+    return res.status(401).send({ error: "No token provided" });
   }
 
   try {
     const decoded = jwt.verify(token, secret) as { _id: string };
-    const user = await User.findById(decoded._id);
+    const user = await User.findById(decoded._id).select("_id username");
 
     if (!user) {
-      return res.status(401).send("Invalid token.");
+      return res.status(401).send({ error: "Invalid token" });
     }
 
-    (req as any).user = user;
+    req.user = user;
     next();
   } catch (error) {
-    res.status(400).send("Invalid token.");
+    res.status(401).send({ error: "Invalid token" });
   }
 };
